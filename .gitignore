@@ -1,0 +1,18 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+**/build/
+**/.gradle/
+**/.kotlin/
+
+# Firma de release - NUNCA commitear
+keystore.properties
+*.jks
+*.keystore

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Concursos CGE</string>
+    <string name="title_home">Concursos Relevantes</string>
+    <string name="title_results">Todos los Concursos</string>
+    <string name="title_keywords">Mis Palabras Clave</string>
+    <string name="title_settings">Configuración</string>
+    <string name="title_details">Detalle del Concurso</string>
+
+    <string name="action_refresh">Actualizar</string>
+    <string name="action_open_site">Abrir sitio original</string>
+    <string name="action_add">Agregar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_delete">Eliminar</string>
+
+    <string name="empty_concursos">No hay concursos relevantes aún</string>
+    <string name="empty_keywords">No hay palabras clave. Agregá algunas para comenzar a recibir notificaciones.</string>
+
+    <string name="search_hint">Buscar concursos…</string>
+    <string name="keyword_hint">Ej: terapista ocupacional</string>
+
+    <string name="settings_interval">Intervalo de actualización</string>
+    <string name="settings_notifications">Notificaciones</string>
+    <string name="settings_dark_mode">Modo oscuro</string>
+    <string name="settings_category_general">General</string>
+    <string name="settings_category_categories">Categorías a monitorear</string>
+
+    <string name="notification_channel_id">concursos_channel</string>
+    <string name="notification_channel_name">Concursos CGE</string>
+    <string name="notification_channel_desc">Avisos de nuevos concursos relevantes</string>
+
+    <string name="label_new">NUEVO</string>
+    <string name="label_score">Score: %1$d</string>
+    <string name="label_matched">Coincidencias: %1$s</string>
+
+    <string name="error_network">Error de red. Revisá tu conexión.</string>
+    <string name="error_generic">Algo salió mal. Intentalo nuevamente.</string>
+</resources>
