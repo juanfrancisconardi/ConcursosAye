@@ -4,27 +4,24 @@ Marcá cuando esté listo. Si ya publicaste otras apps, varios pasos te serán f
 
 ## Lo que ya está en el proyecto
 
-- [x] Icono adaptativo en la app (`mipmap` + vectores)
-- [x] Icono de notificaciones monocromático
 - [x] Política de privacidad online
 - [x] Textos de ficha en `PLAY_STORE_LISTING.md`
-- [x] PNG para Play en `store-assets/`
 
 ## Lo que necesitamos de vos
 
 | # | Dato | Para qué |
 |---|------|----------|
-| 1 | **Correo de soporte** (el de tu cuenta Play o uno dedicado) | Ficha de la tienda y política de privacidad |
-| 2 | **Capturas** 1080×1920 (mín. 2) | Play Console |
-| 3 | **IDs reales de AdMob** (si querés ingresos antes del release) | `gradle.properties` |
-| 4 | Confirmar que **firmás** con tu keystore habitual | Generar `.aab` |
+| 1 | **Imagen del ícono** (PNG, fondo transparente, ideal 1024×1024) | Launcher + Play Store |
+| 2 | **Correo de soporte** | Ficha de la tienda |
+| 3 | **Capturas** 1080×1920 (mín. 2) | Play Console |
+| 4 | **IDs reales de AdMob** (opcional al inicio) | `gradle.properties` |
+| 5 | Firmar con tu keystore | Generar `.aab` |
 
 ## Play Console — orden sugerido
 
 1. **Crear app** → package `ar.gov.entrerios.cge.concursos`
 2. **Ficha de Play Store**
-   - Subir `store-assets/icon-512.png`
-   - Subir `store-assets/feature-graphic-1024x500.png`
+   - Subir ícono 512×512 (tu imagen)
    - Subir capturas
    - Descripción: `docs/PLAY_STORE_LISTING.md`
    - URL privacidad: https://juanfrancisconardi.github.io/ConcursosAye/privacy.html

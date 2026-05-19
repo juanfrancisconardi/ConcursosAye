@@ -63,7 +63,7 @@ Mínimo 2 capturas de teléfono (1080×1920 o similar): Home con listado, Pantal
 
 ### Icono
 
-512×512 PNG para la tienda. El proyecto usa `ic_launcher_foreground`; exportá una versión completa si hace falta.
+512×512 PNG para la tienda (la imagen que proporciones vos, fondo transparente).
 
 ## 6. Declaraciones en Play Console
 

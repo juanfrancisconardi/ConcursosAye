@@ -1,57 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Mate solo: calabaza realista, yerba y bombilla. Fondo transparente (capa aparte). -->
+<!-- Provisional: reemplazar con tu imagen (Image Asset en Android Studio). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Sombra bajo el mate -->
     <path
-        android:fillColor="#000000"
-        android:fillAlpha="0.12"
-        android:pathData="M38,82 Q54,88 70,82 Q54,86 38,82 Z" />
-    <!-- Calabaza — cuerpo -->
-    <path
-        android:fillColor="#8D6E63"
-        android:pathData="M54,30 C40,30 32,42 32,56 C32,70 40,80 54,82 C68,80 76,70 76,56 C76,42 68,30 54,30 Z" />
-    <!-- Sombra lateral -->
-    <path
-        android:fillColor="#5D4037"
-        android:fillAlpha="0.55"
-        android:pathData="M32,56 C32,42 40,30 54,30 C48,30 42,38 40,50 C38,62 40,74 48,80 C40,76 32,68 32,56 Z" />
-    <!-- Luz lateral -->
-    <path
-        android:fillColor="#D7CCC8"
-        android:fillAlpha="0.7"
-        android:pathData="M76,56 C76,70 68,80 54,82 C60,80 66,72 68,60 C70,48 68,38 62,32 C70,36 76,46 76,56 Z" />
-    <!-- Borde superior / boca del mate -->
-    <path
-        android:fillColor="#6D4C41"
-        android:pathData="M42,48 C42,44 48,41 54,41 C60,41 66,44 66,48 C66,51 60,53 54,53 C48,53 42,51 42,48 Z" />
-    <!-- Yerba — montículo irregular -->
-    <path
-        android:fillColor="#3E5F2F"
-        android:pathData="M44,47 C46,42 50,40 54,40 C58,40 62,42 64,47 C65,49 63,51 60,52 C57,53 54,53 51,52 C48,51 44,50 44,47 Z" />
-    <path
-        android:fillColor="#4A6B38"
-        android:pathData="M46,46 C48,43 51,42 54,42 C57,42 60,43 62,46 C61,48 58,49 54,49 C50,49 47,48 46,46 Z" />
-    <path
-        android:fillColor="#2E4A22"
-        android:fillAlpha="0.6"
-        android:pathData="M48,48 C50,46 52,45 54,45 C56,45 58,46 60,48 C59,49 56,50 54,50 C52,50 49,49 48,48 Z" />
-    <!-- Bombilla — tubo metálico -->
-    <path
-        android:fillColor="#757575"
-        android:pathData="M62,22 L65,22 L67.5,46 L66,78 L63,78 L64.5,46 Z" />
-    <path
-        android:fillColor="#BDBDBD"
-        android:pathData="M63.2,24 L64.8,24 L66.8,46 L65.5,76 L64,76 L65.5,46 Z" />
-    <!-- Pico / filtro de la bombilla -->
-    <path
-        android:fillColor="#9E9E9E"
-        android:pathData="M66.5,44 C68,44 69.5,45.5 69.5,47.5 C69.5,49.5 68,51 66.5,51 C65.5,51 65,50 65,48 C65,46 65.5,44 66.5,44 Z" />
-    <!-- Aro superior bombilla -->
-    <path
-        android:fillColor="#616161"
-        android:pathData="M61.5,20 L65.5,20 C66.3,20 67,20.7 67,21.5 C67,22.3 66.3,23 65.5,23 L61.5,23 C60.7,23 60,22.3 60,21.5 C60,20.7 60.7,20 61.5,20 Z" />
+        android:fillColor="#00000000"
+        android:pathData="M0,0h108v108H0z" />
 </vector>
