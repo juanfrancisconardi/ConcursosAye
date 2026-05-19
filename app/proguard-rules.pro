@@ -37,3 +37,7 @@
 # Google Mobile Ads
 -keep class com.google.android.gms.ads.** { *; }
 -dontwarn com.google.android.gms.ads.**
+
+# R8 (AGP): APIs de audio no presentes en compileSdk 34
+-dontwarn android.media.LoudnessCodecController$OnLoudnessCodecUpdateListener
+-dontwarn android.media.LoudnessCodecController
