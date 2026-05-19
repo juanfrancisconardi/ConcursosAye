@@ -17,6 +17,9 @@ interface KeywordDao {
     @Query("SELECT * FROM keywords WHERE enabled = 1")
     suspend fun getActive(): List<KeywordEntity>
 
+    @Query("SELECT * FROM keywords WHERE normalizedText = :normalized LIMIT 1")
+    suspend fun findByNormalized(normalized: String): KeywordEntity?
+
     @Query("SELECT * FROM keywords")
     suspend fun getAll(): List<KeywordEntity>
 

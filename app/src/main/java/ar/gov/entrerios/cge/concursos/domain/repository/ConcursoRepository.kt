@@ -14,12 +14,15 @@ interface ConcursoRepository {
     /**
      * Ejecuta una sincronización completa:
      *  1. Descarga listados de cada categoría monitoreada.
-     *  2. Para cada URL nueva o cambiada, descarga el detalle.
+     *  2. Para cada URL nueva, guarda título/fecha y aplica keywords (detalle bajo demanda).
      *  3. Re-aplica el matching con las keywords actuales.
      *
      * @return cantidad de concursos NUEVOS y RELEVANTES detectados en esta corrida.
      */
     suspend fun sync(): SyncReport
+
+    /** Completa título/cuerpo desde el sitio si la sync rápida no bajó el detalle. */
+    suspend fun ensureDetailLoaded(id: Long)
 
     suspend fun markAsRead(id: Long)
     suspend fun markAsSeen(id: Long)

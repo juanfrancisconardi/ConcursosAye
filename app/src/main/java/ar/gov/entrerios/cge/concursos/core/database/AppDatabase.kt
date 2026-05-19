@@ -17,7 +17,7 @@ import ar.gov.entrerios.cge.concursos.core.database.entity.SettingsEntity
         MatchEntity::class,
         SettingsEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

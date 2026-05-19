@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import ar.gov.entrerios.cge.concursos.navigation.ConcursosNavHost
 import ar.gov.entrerios.cge.concursos.navigation.Routes
 import ar.gov.entrerios.cge.concursos.navigation.TopLevelDestination
+import ar.gov.entrerios.cge.concursos.ads.AdBanner
 import ar.gov.entrerios.cge.concursos.ui.MainViewModel
 import ar.gov.entrerios.cge.concursos.ui.components.SyncReportHost
 import ar.gov.entrerios.cge.concursos.ui.theme.ConcursosTheme
@@ -48,7 +50,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         maybeRequestNotificationPermission()
-        viewModel.maybeRunSyncOnAppOpen()
 
         setContent {
             val darkMode by viewModel.darkMode.collectAsStateWithLifecycle()
@@ -105,7 +106,12 @@ private fun AppRoot(
 
     Scaffold(
         bottomBar = {
-            if (showBottomBar) BottomBar(navController = navController, currentRoute = currentRoute)
+            if (showBottomBar) {
+                Column {
+                    AdBanner()
+                    BottomBar(navController = navController, currentRoute = currentRoute)
+                }
+            }
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
@@ -124,8 +130,14 @@ private fun AppRoot(
     // Popup global de reporte de sincronización (foreground).
     SyncReportHost(
         events = viewModel.syncEvents,
+        syncInProgress = viewModel.syncInProgress,
         onOpenConcurso = { id -> navController.navigate(Routes.details(id)) }
     )
+
+    // Sync al abrir: solo después de que la UI escucha el bus (evita perder el evento Started).
+    LaunchedEffect(Unit) {
+        viewModel.runSyncOnAppOpenIfNeeded()
+    }
 }
 
 @Composable

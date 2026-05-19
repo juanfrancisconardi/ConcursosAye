@@ -25,37 +25,97 @@ import javax.inject.Singleton
  */
 @Singleton
 class CgeScraper @Inject constructor(
-    private val api: CgeApi
+    private val api: CgeApi,
+    private val throttle: CgeRequestThrottle
 ) {
 
     /**
-     * Descarga el listado de una categoría. Si `category` es [Category.GENERAL]
-     * se trae el índice general de concursos.
+     * Una sola petición al índice `/concursos/` con avisos recientes de todos los niveles.
      */
-    suspend fun fetchList(category: Category): List<ConcursoListDto> = withContext(Dispatchers.IO) {
-        val html = if (category == Category.GENERAL) {
-            api.listIndex()
-        } else {
-            api.listByCategorySlug(category.slug)
+    suspend fun fetchConcursosFeed(): List<ConcursoListDto> =
+        withContext(Dispatchers.IO) {
+            throttle.run {
+                val html = api.listIndex(1)
+                CgeHtmlChecks.ensureNotBlocked(html)
+                parseIndexFeed(html)
+            }
         }
-        parseList(html, category)
-    }
+
+    /**
+     * Descarga una página del listado (`?paged=` en WordPress).
+     * [Category.GENERAL] usa el índice `/concursos/`; el resto usa `/category/<archiveSlug>/`.
+     */
+    suspend fun fetchListPage(category: Category, page: Int = 1): List<ConcursoListDto> =
+        withContext(Dispatchers.IO) {
+            throttle.run {
+                require(page >= 1) { "page debe ser >= 1" }
+                val html = if (category == Category.GENERAL) {
+                    api.listIndex(page)
+                } else {
+                    check(category.archiveSlug.isNotEmpty()) {
+                        "La categoría ${category.displayName} no tiene archiveSlug"
+                    }
+                    api.listByCategoryArchive(category.archiveSlug, page)
+                }
+                CgeHtmlChecks.ensureNotBlocked(html)
+                parseList(html, category)
+            }
+        }
 
     /** Descarga y parsea el contenido detallado de una publicación. */
     suspend fun fetchDetail(url: String, fallbackCategory: Category): ConcursoDetailDto =
         withContext(Dispatchers.IO) {
-            val html = api.fetchUrl(url)
-            parseDetail(html, url, fallbackCategory)
+            throttle.run {
+                val html = api.fetchUrl(url)
+                CgeHtmlChecks.ensureNotBlocked(html)
+                parseDetail(html, url, fallbackCategory)
+            }
         }
 
     // ---------------------------------------------------------------------------------
     // Parsing - listado
     // ---------------------------------------------------------------------------------
 
+    internal fun parseIndexFeed(html: String): List<ConcursoListDto> {
+        val doc = Jsoup.parse(html, Constants.BASE_URL)
+        val slides = doc.select("div.swiper-slide[data-hash]")
+        if (slides.isNotEmpty()) {
+            val result = mutableListOf<ConcursoListDto>()
+            val seen = mutableSetOf<String>()
+            for (slide in slides) {
+                val category = categoryFromHash(slide.attr("data-hash")) ?: Category.GENERAL
+                for (block in slide.select("div.lista")) {
+                    val parsed = parseCgeListBlock(block, category) ?: continue
+                    if (seen.add(parsed.url)) result += parsed
+                }
+            }
+            if (result.isNotEmpty()) {
+                Timber.d("CGE índice: %d publicaciones (por slide)", result.size)
+                return result
+            }
+        }
+        return parseList(html, Category.GENERAL)
+    }
+
     internal fun parseList(html: String, category: Category): List<ConcursoListDto> {
         val doc: Document = Jsoup.parse(html, Constants.BASE_URL)
 
-        // Probamos selectores comunes de WordPress (article, .post, .entry, etc.)
+        // Layout actual del CGE: bloques div.lista con h3 > a (índice y categorías).
+        val cgeListBlocks = doc.select("div.page.concursos div.lista")
+        if (cgeListBlocks.isNotEmpty()) {
+            val result = mutableListOf<ConcursoListDto>()
+            val seenUrls = mutableSetOf<String>()
+            for (block in cgeListBlocks) {
+                val parsed = parseCgeListBlock(block, category)
+                if (parsed != null && seenUrls.add(parsed.url)) {
+                    result += parsed
+                }
+            }
+            Timber.d("CGE listado [%s]: %d publicaciones (div.lista)", category.displayName, result.size)
+            return result
+        }
+
+        // Fallback: selectores genéricos de WordPress
         val articleSelectors = listOf(
             "article.post",
             "article",
@@ -91,29 +151,35 @@ class CgeScraper @Inject constructor(
         return result
     }
 
+    private fun parseCgeListBlock(block: Element, category: Category): ConcursoListDto? {
+        val anchor = block.selectFirst("h3 a, h2 a") ?: return null
+        return buildListDto(anchor, block, category)
+    }
+
     private fun parseListItem(article: Element, category: Category): ConcursoListDto? {
         val anchor = article.selectFirst("h2 a, h1 a, h3 a, .entry-title a, a.entry-link")
-            ?: article.selectFirst("a[href*=/concursos/]")
+            ?: article.selectFirst("a[href]")
             ?: return null
+        return buildListDto(anchor, article, category)
+    }
 
+    private fun buildListDto(anchor: Element, container: Element, category: Category): ConcursoListDto? {
         val rawUrl = anchor.absUrl("href").ifBlank { anchor.attr("href") }
-        if (rawUrl.isBlank()) return null
-        if (!rawUrl.contains("/concursos/")) return null
-        // Descartar URLs que apunten al propio listado de categorías
-        if (rawUrl.trimEnd('/').endsWith("/concursos") ||
-            Category.entries.any { rawUrl.trimEnd('/').endsWith("/concursos/${it.slug}") }
-        ) return null
+        if (rawUrl.isBlank() || !isConcursoPostUrl(rawUrl)) return null
 
         val title = anchor.text().trim().ifBlank {
-            article.selectFirst(".entry-title, h2, h1")?.text()?.trim().orEmpty()
+            anchor.attr("title").trim()
+        }.ifBlank {
+            container.selectFirst(".entry-title, h3, h2, h1")?.text()?.trim().orEmpty()
         }
         if (title.isBlank()) return null
 
-        val dateText = article.selectFirst("time")?.let { it.attr("datetime").ifBlank { it.text() } }
-            ?: article.selectFirst(".entry-date, .post-date, .published")?.text()
+        val dateText = container.selectFirst("time")?.let { it.attr("datetime").ifBlank { it.text() } }
+            ?: container.selectFirst("p i.fa-calendar, p i.far.fa-calendar")?.parent()?.text()
+            ?: container.selectFirst(".entry-date, .post-date, .published")?.text()
         val publishedAt = DateFormatter.parsePublishedDate(dateText)
 
-        val excerpt = article.selectFirst(".entry-summary, .entry-content p, .excerpt, p")
+        val excerpt = container.selectFirst(".entry-summary, .entry-content p, .excerpt, p")
             ?.text()
             ?.trim()
             .orEmpty()
@@ -168,9 +234,33 @@ class CgeScraper @Inject constructor(
     // Helpers
     // ---------------------------------------------------------------------------------
 
+    private fun categoryFromHash(hash: String): Category? {
+        val key = hash.trim().lowercase()
+        if (key.isEmpty()) return null
+        return Category.entries.firstOrNull { cat ->
+            cat.archiveSlug.isNotEmpty() && cat.archiveSlug.equals(key, ignoreCase = true)
+        }
+    }
+
     private fun detectCategoryFromUrl(url: String): Category? {
         val lower = url.lowercase()
-        return Category.entries.firstOrNull { it.slug.isNotEmpty() && lower.contains("/concursos/${it.slug}") }
+        return Category.entries.firstOrNull { cat ->
+            cat.archiveSlug.isNotEmpty() && lower.contains("/category/${cat.archiveSlug}")
+        }
+    }
+
+    /** Permalink típico del CGE: https://host/2026/05/titulo-del-aviso/ */
+    private fun isConcursoPostUrl(url: String): Boolean {
+        if (!url.contains("entrerios.gov.ar", ignoreCase = true)) return false
+        val path = runCatching {
+            java.net.URI(url).path?.trimEnd('/').orEmpty()
+        }.getOrDefault(url)
+        if (path.contains("/category/") || path.endsWith("/concursos")) return false
+        if (Category.entries.any { cat ->
+                cat.slug.isNotEmpty() && (path == "/concursos/${cat.slug}" || path.endsWith("/concursos/${cat.slug}"))
+            }
+        ) return false
+        return POST_URL_PATTERN.containsMatchIn("$path/")
     }
 
     /** Quita parámetros de tracking y fragmentos para usar la URL como clave única. */
@@ -184,5 +274,6 @@ class CgeScraper @Inject constructor(
 
     companion object {
         private const val MAX_EXCERPT_CHARS = 280
+        private val POST_URL_PATTERN = Regex("/\\d{4}/\\d{2}/[^/]+/")
     }
 }

@@ -37,7 +37,7 @@ fun ConcursosNavHost(
         }
 
         composable(Routes.SETTINGS) {
-            SettingsScreen()
+            SettingsScreen(onOpenUrl = onOpenUrl)
         }
 
         composable(

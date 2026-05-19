@@ -18,6 +18,13 @@ val keystoreProperties = Properties().apply {
 }
 val hasReleaseSigning: Boolean = keystoreProperties.getProperty("storeFile")?.isNotBlank() == true
 
+fun gradleProp(name: String, default: String = ""): String =
+    (project.findProperty(name) as String?)?.takeIf { it.isNotBlank() } ?: default
+
+val admobAppId = gradleProp("ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713")
+val admobBannerUnitId = gradleProp("ADMOB_BANNER_UNIT_ID", "ca-app-pub-3940256099942544/6300978111")
+val privacyPolicyUrl = gradleProp("PRIVACY_POLICY_URL")
+
 android {
     namespace = "ar.gov.entrerios.cge.concursos"
     compileSdk = 34
@@ -31,6 +38,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+
+        manifestPlaceholders["admobAppId"] = admobAppId
+        buildConfigField("String", "ADMOB_BANNER_UNIT_ID", "\"$admobBannerUnitId\"")
+        buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
     }
 
     signingConfigs {
@@ -133,6 +144,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.material)
     implementation(libs.timber)
+    implementation(libs.play.services.ads)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

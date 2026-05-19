@@ -37,6 +37,10 @@ class SettingsViewModel @Inject constructor(
     fun setNotifications(enabled: Boolean) = update { it.copy(notificationsEnabled = enabled) }
     fun setDarkMode(mode: DarkMode) = update { it.copy(darkMode = mode) }
 
+    fun setSyncDaysBack(days: Int) = update {
+        it.copy(syncDaysBack = days)
+    }
+
     fun toggleCategory(category: Category) = update {
         val newSet = if (it.monitoredCategories.contains(category)) {
             it.monitoredCategories - category

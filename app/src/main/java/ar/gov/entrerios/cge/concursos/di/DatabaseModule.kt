@@ -3,6 +3,7 @@ package ar.gov.entrerios.cge.concursos.di
 import android.content.Context
 import androidx.room.Room
 import ar.gov.entrerios.cge.concursos.core.database.AppDatabase
+import ar.gov.entrerios.cge.concursos.core.database.DatabaseMigrations
 import ar.gov.entrerios.cge.concursos.core.database.dao.ConcursoDao
 import ar.gov.entrerios.cge.concursos.core.database.dao.KeywordDao
 import ar.gov.entrerios.cge.concursos.core.database.dao.SettingsDao
@@ -22,6 +23,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, Constants.DATABASE_NAME)
+            .addMigrations(DatabaseMigrations.MIGRATION_1_2)
             .fallbackToDestructiveMigration()
             .build()
 

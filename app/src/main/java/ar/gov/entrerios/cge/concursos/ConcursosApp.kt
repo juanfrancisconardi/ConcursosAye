@@ -8,6 +8,7 @@ import ar.gov.entrerios.cge.concursos.domain.repository.KeywordRepository
 import ar.gov.entrerios.cge.concursos.domain.repository.SettingsRepository
 import ar.gov.entrerios.cge.concursos.notifications.NotificationHelper
 import ar.gov.entrerios.cge.concursos.work.SyncScheduler
+import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,8 @@ class ConcursosApp : Application(), Configuration.Provider {
         super.onCreate()
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+
+        MobileAds.initialize(this)
 
         notificationHelper.ensureChannel()
 

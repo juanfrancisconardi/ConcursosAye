@@ -40,18 +40,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Schedule
+import ar.gov.entrerios.cge.concursos.BuildConfig
 import ar.gov.entrerios.cge.concursos.R
 import ar.gov.entrerios.cge.concursos.core.model.Category
 import ar.gov.entrerios.cge.concursos.core.model.DarkMode
 import ar.gov.entrerios.cge.concursos.core.model.SyncMode
+import ar.gov.entrerios.cge.concursos.core.util.ConcursoDateFilter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    onOpenUrl: (String) -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     var showTimePicker by remember { mutableStateOf(false) }
+    var showPrivacyDialog by remember { mutableStateOf(false) }
+    val privacyUrl = BuildConfig.PRIVACY_POLICY_URL
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.title_settings))}) }
@@ -140,6 +145,31 @@ fun SettingsScreen(
             }
 
             Spacer(modifier = Modifier.height(4.dp))
+            SectionLabel(stringResource(R.string.settings_days_back_title))
+
+            SettingCard {
+                Text(
+                    text = stringResource(R.string.settings_days_back_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                androidx.compose.foundation.layout.FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ConcursoDateFilter.presetDaysBack.forEach { days ->
+                        FilterChip(
+                            selected = settings.syncDaysBack == days,
+                            onClick = { viewModel.setSyncDaysBack(days) },
+                            label = { Text(stringResource(R.string.settings_days_back_option, days)) }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
             SectionLabel(stringResource(R.string.settings_category_categories))
 
             SettingCard {
@@ -159,12 +189,64 @@ fun SettingsScreen(
                 }
             }
 
+            SectionLabel(stringResource(R.string.settings_legal_section))
+            SettingCard {
+                Text(
+                    text = stringResource(R.string.settings_legal_disclaimer),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.settings_version, BuildConfig.VERSION_NAME),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                TextButton(
+                    onClick = {
+                        if (privacyUrl.isNotBlank()) {
+                            onOpenUrl(privacyUrl)
+                        } else {
+                            showPrivacyDialog = true
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.settings_privacy_policy))
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = viewModel::forceRefreshNow,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Sincronizar ahora")
+            }
+        }
+    }
+
+    if (showPrivacyDialog) {
+        Dialog(onDismissRequest = { showPrivacyDialog = false }) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_privacy_policy),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.privacy_policy_body),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TextButton(onClick = { showPrivacyDialog = false }) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
             }
         }
     }

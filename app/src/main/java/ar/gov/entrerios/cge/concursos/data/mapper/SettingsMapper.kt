@@ -5,6 +5,7 @@ import ar.gov.entrerios.cge.concursos.core.model.AppSettings
 import ar.gov.entrerios.cge.concursos.core.model.Category
 import ar.gov.entrerios.cge.concursos.core.model.DarkMode
 import ar.gov.entrerios.cge.concursos.core.model.SyncMode
+import ar.gov.entrerios.cge.concursos.core.util.ConcursoDateFilter
 
 fun SettingsEntity.toDomain(): AppSettings = AppSettings(
     syncMode = runCatching { SyncMode.valueOf(syncMode) }.getOrDefault(SyncMode.ON_APP_OPEN),
@@ -18,7 +19,8 @@ fun SettingsEntity.toDomain(): AppSettings = AppSettings(
         .filter { it.isNotEmpty() }
         .map { Category.fromSlug(it) }
         .toSet()
-        .ifEmpty { Category.monitored.toSet() }
+        .ifEmpty { Category.monitored.toSet() },
+    syncDaysBack = ConcursoDateFilter.coerceDaysBack(syncDaysBack)
 )
 
 fun AppSettings.toEntity(): SettingsEntity = SettingsEntity(
@@ -28,5 +30,6 @@ fun AppSettings.toEntity(): SettingsEntity = SettingsEntity(
     dailyMinute = dailyMinute.coerceIn(0, 59),
     notificationsEnabled = notificationsEnabled,
     darkMode = darkMode.name,
-    monitoredCategories = monitoredCategories.joinToString(",") { it.slug }
+    monitoredCategories = monitoredCategories.joinToString(",") { it.slug },
+    syncDaysBack = ConcursoDateFilter.coerceDaysBack(syncDaysBack)
 )

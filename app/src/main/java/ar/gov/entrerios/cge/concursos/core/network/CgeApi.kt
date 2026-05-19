@@ -1,6 +1,7 @@
 package ar.gov.entrerios.cge.concursos.core.network
 
 import retrofit2.http.GET
+import retrofit2.http.Query
 import retrofit2.http.Url
 
 /**
@@ -11,12 +12,16 @@ import retrofit2.http.Url
  */
 interface CgeApi {
 
-    /** Listado de una categoría (ej: "concursos/inicial/") o el índice "concursos/". */
-    @GET("concursos/{slug}/")
-    suspend fun listByCategorySlug(@retrofit2.http.Path("slug") slug: String): String
+    /** Archivo WordPress de una categoría (ej: "category/concursos-inicial/"). */
+    @GET("category/{slug}/")
+    suspend fun listByCategoryArchive(
+        @retrofit2.http.Path("slug") slug: String,
+        @Query("paged") page: Int = 1
+    ): String
 
+    /** Índice general de concursos en `/concursos/`. */
     @GET("concursos/")
-    suspend fun listIndex(): String
+    suspend fun listIndex(@Query("paged") page: Int = 1): String
 
     /** Descarga arbitraria por URL absoluta (para detalle de publicación). */
     @GET

@@ -31,12 +31,13 @@ class MainViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, DarkMode.SYSTEM)
 
     val syncEvents: SharedFlow<UiSyncEvent> = syncEventBus.events
+    val syncInProgress: StateFlow<Boolean> = syncEventBus.syncInProgress
 
     /**
      * Ejecuta una sincronización si el usuario eligió "Solo al abrir la app".
-     * Se llama una sola vez por sesión desde [MainActivity.onCreate].
+     * Debe llamarse desde la UI ya compuesta (ver [AppRoot]).
      */
-    fun maybeRunSyncOnAppOpen() {
+    fun runSyncOnAppOpenIfNeeded() {
         viewModelScope.launch {
             val settings = settingsRepository.get()
             if (settings.syncMode == SyncMode.ON_APP_OPEN) {

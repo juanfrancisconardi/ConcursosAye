@@ -2,6 +2,7 @@ package ar.gov.entrerios.cge.concursos.di
 
 import ar.gov.entrerios.cge.concursos.BuildConfig
 import ar.gov.entrerios.cge.concursos.core.network.CgeApi
+import ar.gov.entrerios.cge.concursos.core.network.CgeRetryInterceptor
 import ar.gov.entrerios.cge.concursos.core.network.HtmlStringConverter
 import ar.gov.entrerios.cge.concursos.core.util.Constants
 import dagger.Module
@@ -32,16 +33,19 @@ object NetworkModule {
             val req = chain.request().newBuilder()
                 .header(
                     "User-Agent",
-                    "ConcursosCGE/1.0 (Android; +https://cge.entrerios.gov.ar)"
+                    "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) " +
+                        "Chrome/120.0.0.0 Mobile Safari/537.36"
                 )
                 .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-                .header("Accept-Language", "es-AR,es;q=0.9")
+                .header("Accept-Language", "es-AR,es;q=0.9,en;q=0.8")
+                .header("Connection", "close")
                 .build()
             chain.proceed(req)
         }
 
         return OkHttpClient.Builder()
             .addInterceptor(uaInterceptor)
+            .addInterceptor(CgeRetryInterceptor())
             .addInterceptor(logger)
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)

@@ -26,13 +26,31 @@ class KeywordRepositoryImpl @Inject constructor(
     override suspend fun add(text: String): Long {
         val clean = text.trim()
         if (clean.isEmpty()) return -1L
-        return dao.insert(
+
+        val normalized = TextNormalizer.normalize(clean)
+        val existing = dao.findByNormalized(normalized)
+        if (existing != null) {
+            dao.update(
+                existing.copy(
+                    text = clean,
+                    enabled = true
+                )
+            )
+            return existing.id
+        }
+
+        val insertedId = dao.insert(
             KeywordEntity(
                 text = clean,
-                normalizedText = TextNormalizer.normalize(clean),
+                normalizedText = normalized,
                 enabled = true
             )
         )
+        return if (insertedId == -1L) {
+            dao.findByNormalized(normalized)?.id ?: -1L
+        } else {
+            insertedId
+        }
     }
 
     override suspend fun update(keyword: Keyword) {

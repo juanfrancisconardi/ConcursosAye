@@ -1,10 +1,14 @@
 package ar.gov.entrerios.cge.concursos.core.model
 
+import ar.gov.entrerios.cge.concursos.core.util.ConcursoDateFilter
+
 /**
  * Configuración de la aplicación, controlada por el usuario.
  */
 data class AppSettings(
     val syncMode: SyncMode = SyncMode.ON_APP_OPEN,
+    /** Solo sincronizar y mostrar avisos de los últimos N días (por fecha de publicación). */
+    val syncDaysBack: Int = ConcursoDateFilter.DEFAULT_DAYS_BACK,
     /** Hora del día (0-23) en la que se hace el chequeo automático cuando [syncMode] = DAILY. */
     val dailyHour: Int = 8,
     /** Minuto del día (0-59) en la que se hace el chequeo automático cuando [syncMode] = DAILY. */

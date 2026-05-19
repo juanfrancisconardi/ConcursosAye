@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.gov.entrerios.cge.concursos.core.model.Concurso
+import ar.gov.entrerios.cge.concursos.domain.usecase.EnsureConcursoDetailUseCase
 import ar.gov.entrerios.cge.concursos.domain.usecase.MarkConcursoAsReadUseCase
 import ar.gov.entrerios.cge.concursos.domain.usecase.ObserveConcursoDetailUseCase
 import ar.gov.entrerios.cge.concursos.navigation.Routes
@@ -19,10 +20,15 @@ import javax.inject.Inject
 class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observeDetail: ObserveConcursoDetailUseCase,
+    private val ensureDetail: EnsureConcursoDetailUseCase,
     private val markAsRead: MarkConcursoAsReadUseCase
 ) : ViewModel() {
 
     private val concursoId: Long = savedStateHandle.get<Long>(Routes.DETAILS_ARG) ?: 0L
+
+    init {
+        viewModelScope.launch { ensureDetail(concursoId) }
+    }
 
     val concurso: StateFlow<Concurso?> = observeDetail(concursoId)
         .onEach { it?.let { c -> if (!c.isRead) viewModelScope.launch { markAsRead(c.id) } } }

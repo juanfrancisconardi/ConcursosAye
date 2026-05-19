@@ -11,6 +11,7 @@ data class Concurso(
     val category: Category,
     val excerpt: String,
     val content: String,
+    val contentHash: String = "",
     val detectedAt: Long,
     val isNew: Boolean,
     val isRead: Boolean,

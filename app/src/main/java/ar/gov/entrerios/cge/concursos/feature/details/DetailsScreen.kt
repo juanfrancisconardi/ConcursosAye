@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ar.gov.entrerios.cge.concursos.R
+import ar.gov.entrerios.cge.concursos.core.util.Constants
 import ar.gov.entrerios.cge.concursos.core.util.DateFormatter
 import ar.gov.entrerios.cge.concursos.ui.components.LoadingIndicator
 
@@ -110,7 +111,7 @@ fun DetailsScreen(
                     c.matches.forEach { match ->
                         AssistChip(
                             onClick = {},
-                            label = { Text("${match.keyword} · ${match.location.name.lowercase()}") },
+                            label = { Text(match.keyword) },
                             colors = AssistChipDefaults.assistChipColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
                                 labelColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -121,8 +122,14 @@ fun DetailsScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+            val bodyText = when {
+                c.contentHash == Constants.CONTENT_HASH_PENDING &&
+                    c.content.isBlank() && c.excerpt.isBlank() ->
+                    stringResource(R.string.detail_loading_body)
+                else -> c.content.ifBlank { c.excerpt }
+            }
             Text(
-                text = c.content.ifBlank { c.excerpt },
+                text = bodyText,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )

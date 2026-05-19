@@ -16,5 +16,7 @@ data class SettingsEntity(
     val notificationsEnabled: Boolean = true,
     val darkMode: String = "SYSTEM",
     /** Slugs de categorías separados por coma, ej: "inicial,primario,secundario". */
-    val monitoredCategories: String = "inicial,primario,secundario,superior,supervisor"
+    val monitoredCategories: String = "inicial,primario,secundario,superior,supervisor",
+    /** Ventana de días hacia atrás para sync y listados. */
+    val syncDaysBack: Int = 30
 )

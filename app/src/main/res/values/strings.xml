@@ -14,6 +14,10 @@
     <string name="action_delete">Eliminar</string>
 
     <string name="empty_concursos">No hay concursos relevantes aún</string>
+    <string name="home_empty_default">Cuando aparezcan publicaciones que coincidan con tus palabras clave, las verás acá.</string>
+    <string name="home_empty_auto_sync">La app busca al abrir. Si no hay novedades, probá actualizar con el botón ↻ arriba a la derecha.</string>
+    <string name="home_empty_tap_refresh">Tocá el botón ↻ arriba a la derecha para buscar concursos en el sitio del CGE.</string>
+    <string name="home_sync_in_progress">Buscando concursos en el CGE…</string>
     <string name="empty_keywords">No hay palabras clave. Agregá algunas para comenzar a recibir notificaciones.</string>
 
     <string name="search_hint">Buscar concursos…</string>
@@ -24,6 +28,9 @@
     <string name="settings_dark_mode">Modo oscuro</string>
     <string name="settings_category_general">General</string>
     <string name="settings_category_categories">Categorías a monitorear</string>
+    <string name="settings_days_back_title">Antigüedad de avisos</string>
+    <string name="settings_days_back_description">Solo buscar y mostrar concursos publicados en los últimos días. Por defecto: 30.</string>
+    <string name="settings_days_back_option">%1$d días</string>
 
     <string name="notification_channel_id">concursos_channel</string>
     <string name="notification_channel_name">Concursos CGE</string>
@@ -33,6 +40,18 @@
     <string name="label_score">Score: %1$d</string>
     <string name="label_matched">Coincidencias: %1$s</string>
 
+    <string name="sync_searching_title">Buscando concursos…</string>
+    <string name="sync_searching_message">Conectando con CGE Entre Ríos…</string>
+    <string name="sync_searching_hint">Podés cerrar este mensaje tocando afuera o el botón de abajo. La búsqueda sigue en segundo plano y te avisamos al terminar.</string>
+    <string name="sync_continue_background">Continuar en segundo plano</string>
+    <string name="detail_loading_body">Cargando texto completo del aviso…</string>
+
     <string name="error_network">Error de red. Revisá tu conexión.</string>
     <string name="error_generic">Algo salió mal. Intentalo nuevamente.</string>
+
+    <string name="settings_legal_section">Información legal</string>
+    <string name="settings_legal_disclaimer">Esta aplicación no está afiliada ni es oficial del Consejo General de Educación de Entre Ríos. Solo consulta publicaciones públicas del sitio cge.entrerios.gov.ar.</string>
+    <string name="settings_version">Versión %1$s</string>
+    <string name="settings_privacy_policy">Política de privacidad</string>
+    <string name="privacy_policy_body">Concursos CGE guarda en tu dispositivo las palabras clave y los avisos descargados. Para mostrar avisos publicitarios usa Google AdMob, que puede recopilar identificadores de publicidad según su propia política. No vendemos tus datos. Las consultas al sitio del CGE son anónimas desde la app. Podés desinstalar la app para borrar los datos locales.</string>
 </resources>
