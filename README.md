@@ -29,10 +29,15 @@ Kotlin · Jetpack Compose · Material 3 · Hilt · Room · WorkManager · Retrof
 
 ## Publicar en Play Store
 
-Guía paso a paso: **[docs/PLAY_STORE.md](docs/PLAY_STORE.md)**
+| Documento | Contenido |
+|-----------|-----------|
+| [docs/PLAY_STORE.md](docs/PLAY_STORE.md) | Firma, AdMob, bundle, checklist |
+| [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md) | Activar la URL de privacidad |
+| [docs/PLAY_STORE_LISTING.md](docs/PLAY_STORE_LISTING.md) | Textos para copiar en Play Console |
+
+**URL de privacidad:** https://juanfrancisconardi.github.io/ConcursosAye/privacy.html (requiere activar Pages en GitHub)
 
 - Firma release: `keystore.properties.example`
-- Política de privacidad: [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md) y [docs/privacy.html](docs/privacy.html) (para GitHub Pages)
 - Monetización: **Google AdMob** (banner). Configurar IDs en `gradle.properties`
 
 ## Configuración de AdMob y privacidad

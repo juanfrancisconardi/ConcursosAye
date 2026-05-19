@@ -36,16 +36,15 @@ Los IDs de prueba de Google solo sirven en desarrollo; **no** uses ingresos real
 
 ## 4. Política de privacidad (obligatorio)
 
-Play Console exige una **URL pública**. Opciones:
+La URL ya está preparada:
 
-- **GitHub Pages:** publicá `docs/PRIVACY_POLICY.md` como sitio (o `docs/privacy.html`).
-- Subí la URL en `gradle.properties`:
+**https://juanfrancisconardi.github.io/ConcursosAye/privacy.html**
 
-```properties
-PRIVACY_POLICY_URL=https://tu-usuario.github.io/ConcursosAye/privacy
-```
+1. Activá GitHub Pages siguiendo **[GITHUB_PAGES.md](GITHUB_PAGES.md)** (Settings → Pages → rama `main`, carpeta `/docs`).
+2. Verificá que la URL abra en el navegador.
+3. La misma URL va en Play Console → Política de privacidad (y ya está en `gradle.properties`).
 
-La misma URL va en Play Console → Política de privacidad.
+Textos listos para copiar en la ficha: **[PLAY_STORE_LISTING.md](PLAY_STORE_LISTING.md)**.
 
 ## 5. Ficha de la tienda
 
