@@ -72,7 +72,7 @@ class NotificationHelper @Inject constructor(
             val date = DateFormatter.formatDate(concurso.publishedAt ?: concurso.detectedAt)
 
             val notif = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_stat_notification)
                 .setContentTitle(concurso.title.take(80))
                 .setContentText("Coincide con \"$keyword\" · $date")
                 .setStyle(
@@ -95,7 +95,7 @@ class NotificationHelper @Inject constructor(
             inboxStyle.setSummaryText("${concursos.size} resultados")
 
             val summary = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_stat_notification)
                 .setContentTitle("Concursos CGE")
                 .setContentText("${concursos.size} nuevos concursos relevantes")
                 .setStyle(inboxStyle)
