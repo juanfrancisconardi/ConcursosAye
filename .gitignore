@@ -9,6 +9,7 @@
 .cxx
 local.properties
 **/build/
+app/release/
 **/.gradle/
 **/.kotlin/
 
