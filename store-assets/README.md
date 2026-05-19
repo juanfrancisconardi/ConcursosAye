@@ -4,7 +4,7 @@ Archivos listos para subir en **Play Console → Ficha de Play Store**.
 
 | Archivo | Tamaño | Uso en Play Console |
 |---------|--------|---------------------|
-| `icon-512.png` | 512 × 512 | **Icono de la aplicación** (mate, fondo transparente) |
+| `icon-512.png` | 512 × 512 | **Icono de la aplicación** (solo mate, fondo transparente). Exportar desde Android Studio si actualizás el vector. |
 | `feature-graphic-1024x500.png` | 1024 × 500 | **Gráfico de funciones** (opcional pero recomendado) |
 
 ## Capturas de pantalla (las sacás vos)
