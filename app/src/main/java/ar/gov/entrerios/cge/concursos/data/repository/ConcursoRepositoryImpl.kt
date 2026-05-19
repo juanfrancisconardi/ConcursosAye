@@ -6,6 +6,7 @@ import ar.gov.entrerios.cge.concursos.core.model.Category
 import ar.gov.entrerios.cge.concursos.core.model.Concurso
 import ar.gov.entrerios.cge.concursos.core.network.CgeAccessException
 import ar.gov.entrerios.cge.concursos.core.network.CgeAccessGuard
+import ar.gov.entrerios.cge.concursos.core.network.findCgeAccessException
 import ar.gov.entrerios.cge.concursos.core.network.CgeScraper
 import ar.gov.entrerios.cge.concursos.core.network.dto.ConcursoListDto
 import ar.gov.entrerios.cge.concursos.core.util.ConcursoDateFilter
@@ -133,6 +134,15 @@ class ConcursoRepositoryImpl @Inject constructor(
         } catch (e: CgeAccessException) {
             accessGuard.markBlocked()
             errors += e.message ?: CgeAccessException.MSG_DEFAULT
+        } catch (e: java.io.IOException) {
+            val blocked = e.findCgeAccessException()
+            if (blocked != null) {
+                accessGuard.markBlocked()
+                errors += blocked.message ?: CgeAccessException.MSG_DEFAULT
+            } else {
+                Timber.w(e, "Error de red listando índice CGE")
+                errors += e.message ?: "Error de red"
+            }
         } catch (t: Throwable) {
             Timber.w(t, "Error listando índice CGE")
             errors += t.message ?: t::class.java.simpleName
@@ -260,4 +270,5 @@ class ConcursoRepositoryImpl @Inject constructor(
         val bytes = MessageDigest.getInstance("SHA-1").digest(input.toByteArray())
         return bytes.joinToString("") { "%02x".format(it) }
     }
+
 }

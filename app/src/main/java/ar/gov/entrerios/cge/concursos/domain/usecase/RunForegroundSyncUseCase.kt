@@ -1,6 +1,7 @@
 package ar.gov.entrerios.cge.concursos.domain.usecase
 
 import ar.gov.entrerios.cge.concursos.core.network.CgeAccessException
+import ar.gov.entrerios.cge.concursos.core.network.findCgeAccessException
 import ar.gov.entrerios.cge.concursos.core.util.SyncEventBus
 import ar.gov.entrerios.cge.concursos.domain.repository.ConcursoRepository
 import ar.gov.entrerios.cge.concursos.domain.repository.SyncReport
@@ -28,8 +29,9 @@ class RunForegroundSyncUseCase @Inject constructor(
         } catch (t: Throwable) {
             Timber.e(t, "Foreground sync falló")
             syncEventBus.publishError(t)
-            val msg = when (t) {
-                is CgeAccessException -> t.message ?: CgeAccessException.MSG_DEFAULT
+            val blocked = t.findCgeAccessException()
+            val msg = when {
+                blocked != null -> blocked.message ?: CgeAccessException.MSG_DEFAULT
                 else -> t.message ?: t::class.java.simpleName
             }
             SyncReport(
