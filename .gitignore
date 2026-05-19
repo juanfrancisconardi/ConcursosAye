@@ -16,4 +16,15 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+
+# Temporales y assets de diseño local
 tmp_*.html
+store-assets/
+**/launcher-*.png
+
+# Documentación de desarrollo (la política pública está en docs/*.html)
+*.md
+
+# Cursor / conversaciones del agente
+.cursor/
+agent-transcripts/
