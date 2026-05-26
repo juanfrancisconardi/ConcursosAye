@@ -11,7 +11,7 @@ object Constants {
     const val SYNC_WORK_TAG = "cge_sync"
 
     const val NOTIFICATION_CHANNEL_ID = "concursos_channel"
-    const val NOTIFICATION_GROUP_KEY = "com.concursosdocentes.er.NEW_CONCURSOS"
+    const val NOTIFICATION_GROUP_KEY = "ar.gov.entrerios.cge.concursos.NEW_CONCURSOS"
 
     /**
      * Páginas por categoría en sync rutinaria (~20 avisos recientes por nivel en pág. 1).
