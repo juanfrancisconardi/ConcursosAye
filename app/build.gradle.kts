@@ -27,12 +27,12 @@ val privacyPolicyUrl = gradleProp("PRIVACY_POLICY_URL")
 
 android {
     namespace = "ar.gov.entrerios.cge.concursos"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "ar.gov.entrerios.cge.concursos"
+        applicationId = "com.concursosdocentes.er"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
 
@@ -63,6 +63,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
+            }
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
             }

@@ -58,7 +58,7 @@ class NotificationHelper @Inject constructor(
         concursos.forEach { concurso ->
             val intent = Intent(context, MainActivity::class.java).apply {
                 action = Intent.ACTION_VIEW
-                data = Uri.parse("concursoscge://detalle/${concurso.id}")
+                data = Uri.parse("concursosdocentes://detalle/${concurso.id}")
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             val pendingIntent = PendingIntent.getActivity(
@@ -96,7 +96,7 @@ class NotificationHelper @Inject constructor(
 
             val summary = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_notification)
-                .setContentTitle("Concursos CGE")
+                .setContentTitle(context.getString(R.string.app_name))
                 .setContentText("${concursos.size} nuevos concursos relevantes")
                 .setStyle(inboxStyle)
                 .setGroup(Constants.NOTIFICATION_GROUP_KEY)

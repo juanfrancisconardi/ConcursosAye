@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
 
 private fun String?.toDeepLinkRoute(): String? {
     val uri = this?.let { Uri.parse(it) } ?: return null
-    if (uri.scheme == "concursoscge" && uri.host == "detalle") {
+    if (uri.scheme == "concursosdocentes" && uri.host == "detalle") {
         val id = uri.lastPathSegment?.toLongOrNull() ?: return null
         return Routes.details(id)
     }

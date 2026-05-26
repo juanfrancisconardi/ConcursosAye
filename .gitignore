@@ -18,9 +18,13 @@ keystore.properties
 *.jks
 *.keystore
 
+node_modules/
+package-lock.json
+
 # Temporales y assets de diseño local
 tmp_*.html
 store-assets/
+play-store-assets/
 **/launcher-*.png
 
 # Documentación de desarrollo (la política pública está en docs/*.html)

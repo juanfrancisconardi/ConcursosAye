@@ -83,7 +83,7 @@ fun SettingsScreen(
 
                 SyncModeOption(
                     label = "Todos los días a una hora",
-                    description = "La app revisa el sitio del CGE automáticamente, incluso cerrada.",
+                    description = "La app revisa las fuentes públicas de concursos automáticamente, incluso cerrada.",
                     selected = settings.syncMode == SyncMode.DAILY,
                     onClick = { viewModel.setSyncMode(SyncMode.DAILY) }
                 )
