@@ -20,3 +20,11 @@ data class ConcursoDetailDto(
     val content: String,
     val category: Category
 )
+
+enum class AttachmentType { IMAGE, PDF }
+
+/** Adjunto descargable de un aviso (imagen o PDF) para lectura profunda con OCR. */
+data class Attachment(
+    val url: String,
+    val type: AttachmentType
+)

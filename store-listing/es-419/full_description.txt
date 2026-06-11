@@ -1,0 +1,21 @@
+AVISO IMPORTANTE — APP NO OFICIAL
+
+Esta aplicación NO es oficial ni representa al Consejo General de Educación (CGE) de Entre Ríos ni al Gobierno de la Provincia de Entre Ríos. No está afiliada, patrocinada ni autorizada por esas entidades.
+
+No gestiona inscripciones, trámites ni postulaciones: solo organiza y notifica información pública ya publicada en fuentes oficiales.
+
+Qué hace la app:
+• Consulta publicaciones del índice general de concursos del CGE y de la departamental que elijas.
+• Muestra un listado de convocatorias filtrado por tus palabras clave activas.
+• Te avisa cuando aparecen avisos nuevos que coinciden con tus keywords.
+• Permite abrir cada publicación para leer su detalle completo dentro de la app.
+• Incluye búsqueda exhaustiva: lee adjuntos (imágenes y PDF) con OCR para detectar cargos que no figuran en el texto del aviso.
+
+Cómo se usa:
+1. Configurá tus palabras clave (por ejemplo: "terapista ocupacional", "psicopedagogo", "integración").
+2. Elegí categorías, departamental y antigüedad de avisos en Configuración.
+3. Actualizá o dejá que la app sincronice al abrir; revisá "Concursos Relevantes" y activá las alertas.
+
+Fuente de datos:
+La app consulta información pública del sitio oficial del CGE:
+https://cge.entrerios.gov.ar/concursos/

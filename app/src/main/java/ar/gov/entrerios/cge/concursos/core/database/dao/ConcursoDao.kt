@@ -27,6 +27,9 @@ interface ConcursoDao {
     @Query("SELECT * FROM concursos ORDER BY (publishedAt IS NULL), publishedAt DESC, detectedAt DESC")
     fun observeAll(): Flow<List<ConcursoWithMatches>>
 
+    @Query("SELECT * FROM concursos")
+    suspend fun getAll(): List<ConcursoEntity>
+
     @Transaction
     @Query(
         "SELECT * FROM concursos WHERE score > 0 " +
@@ -56,6 +59,9 @@ interface ConcursoDao {
 
     @Query("UPDATE concursos SET isNew = 0")
     suspend fun clearAllNewFlags()
+
+    @Query("UPDATE concursos SET deepScannedAt = :timestamp WHERE id = :id")
+    suspend fun setDeepScannedAt(id: Long, timestamp: Long)
 
     @Query("DELETE FROM matches WHERE concursoId = :concursoId")
     suspend fun deleteMatchesFor(concursoId: Long)

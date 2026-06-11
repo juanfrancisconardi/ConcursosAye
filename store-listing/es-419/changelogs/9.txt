@@ -1,0 +1,4 @@
+Novedades de esta versión:
+• Elegí tu departamental (DDE) en Configuración para incluir sus convocatorias.
+• Lectura profunda automática (OCR de imágenes y PDF) al sincronizar la departamental elegida.
+• Mejor detección de cargos en planillas adjuntas a los avisos del CGE.

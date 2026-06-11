@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ar.gov.entrerios.cge.concursos.core.model.AppSettings
 import ar.gov.entrerios.cge.concursos.core.model.Category
 import ar.gov.entrerios.cge.concursos.core.model.DarkMode
+import ar.gov.entrerios.cge.concursos.core.model.Departamental
 import ar.gov.entrerios.cge.concursos.core.model.SyncMode
 import ar.gov.entrerios.cge.concursos.domain.usecase.ObserveSettingsUseCase
 import ar.gov.entrerios.cge.concursos.domain.usecase.RunForegroundSyncUseCase
@@ -48,6 +49,10 @@ class SettingsViewModel @Inject constructor(
             it.monitoredCategories + category
         }
         it.copy(monitoredCategories = newSet)
+    }
+
+    fun setDepartamental(departamental: Departamental) = update {
+        it.copy(selectedDepartamental = departamental)
     }
 
     fun forceRefreshNow() {

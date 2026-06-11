@@ -24,6 +24,18 @@ interface ConcursoRepository {
     /** Completa título/cuerpo desde el sitio si la sync rápida no bajó el detalle. */
     suspend fun ensureDetailLoaded(id: Long)
 
+    /** Recalcula score y coincidencias de TODOS los avisos según keywords activas actuales. */
+    suspend fun recomputeAllRelevance()
+
+    /**
+     * Lectura profunda de un aviso: baja sus adjuntos (imágenes/PDF), les aplica OCR,
+     * suma ese texto al contenido buscable y re-evalúa las keywords.
+     */
+    suspend fun deepScanConcurso(id: Long)
+
+    /** Lectura profunda de los avisos recientes aún no escaneados ("Buscar a fondo"). */
+    suspend fun deepScanRecent(): DeepScanReport
+
     suspend fun markAsRead(id: Long)
     suspend fun markAsSeen(id: Long)
     suspend fun clearAllNewFlags()
@@ -33,4 +45,11 @@ data class SyncReport(
     val totalFetched: Int,
     val newRelevant: List<Concurso>,
     val errors: List<String>
+)
+
+data class DeepScanReport(
+    val processed: Int,
+    val newlyRelevant: Int,
+    val blocked: Boolean,
+    val error: String? = null
 )

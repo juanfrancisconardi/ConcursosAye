@@ -38,6 +38,11 @@
 -keep class com.google.android.gms.ads.** { *; }
 -dontwarn com.google.android.gms.ads.**
 
+# ML Kit Text Recognition (OCR on-device)
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.android.gms.internal.mlkit_vision_text** { *; }
+-dontwarn com.google.mlkit.**
+
 # R8 (AGP): APIs de audio no presentes en compileSdk 34
 -dontwarn android.media.LoudnessCodecController$OnLoudnessCodecUpdateListener
 -dontwarn android.media.LoudnessCodecController

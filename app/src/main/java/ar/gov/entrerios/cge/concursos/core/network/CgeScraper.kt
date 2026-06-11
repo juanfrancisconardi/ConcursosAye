@@ -1,6 +1,9 @@
 package ar.gov.entrerios.cge.concursos.core.network
 
 import ar.gov.entrerios.cge.concursos.core.model.Category
+import ar.gov.entrerios.cge.concursos.core.model.Departamental
+import ar.gov.entrerios.cge.concursos.core.network.dto.Attachment
+import ar.gov.entrerios.cge.concursos.core.network.dto.AttachmentType
 import ar.gov.entrerios.cge.concursos.core.network.dto.ConcursoDetailDto
 import ar.gov.entrerios.cge.concursos.core.network.dto.ConcursoListDto
 import ar.gov.entrerios.cge.concursos.core.util.Constants
@@ -42,6 +45,19 @@ class CgeScraper @Inject constructor(
         }
 
     /**
+     * Convocatorias publicadas en la página de una DDE (misma estructura swiper/lista que /concursos/).
+     */
+    suspend fun fetchDepartamentalFeed(departamental: Departamental): List<ConcursoListDto> =
+        withContext(Dispatchers.IO) {
+            require(departamental.isActive) { "Departamental inactiva" }
+            throttle.run {
+                val html = api.listDepartamental(departamental.slug)
+                CgeHtmlChecks.ensureNotBlocked(html)
+                parseIndexFeed(html)
+            }
+        }
+
+    /**
      * Descarga una página del listado (`?paged=` en WordPress).
      * [Category.GENERAL] usa el índice `/concursos/`; el resto usa `/category/<archiveSlug>/`.
      */
@@ -69,6 +85,35 @@ class CgeScraper @Inject constructor(
                 val html = api.fetchUrl(url)
                 CgeHtmlChecks.ensureNotBlocked(html)
                 parseDetail(html, url, fallbackCategory)
+            }
+        }
+
+    /**
+     * Descarga la publicación y extrae sus adjuntos (imágenes y PDF) para la lectura
+     * profunda con OCR. Solo considera archivos alojados en el propio CGE.
+     */
+    suspend fun fetchAttachments(url: String): List<Attachment> =
+        withContext(Dispatchers.IO) {
+            throttle.run {
+                val html = api.fetchUrl(url)
+                CgeHtmlChecks.ensureNotBlocked(html)
+                parseAttachments(html, url)
+            }
+        }
+
+    /**
+     * Baja la publicación **una sola vez** y devuelve a la vez el detalle y sus adjuntos.
+     * Evita pedir dos veces la misma página en la lectura profunda.
+     */
+    suspend fun fetchDetailWithAttachments(
+        url: String,
+        fallbackCategory: Category
+    ): Pair<ConcursoDetailDto, List<Attachment>> =
+        withContext(Dispatchers.IO) {
+            throttle.run {
+                val html = api.fetchUrl(url)
+                CgeHtmlChecks.ensureNotBlocked(html)
+                parseDetail(html, url, fallbackCategory) to parseAttachments(html, url)
             }
         }
 
@@ -231,6 +276,65 @@ class CgeScraper @Inject constructor(
     }
 
     // ---------------------------------------------------------------------------------
+    // Parsing - adjuntos (para OCR)
+    // ---------------------------------------------------------------------------------
+
+    internal fun parseAttachments(html: String, baseUrl: String): List<Attachment> {
+        val doc = Jsoup.parse(html, baseUrl)
+        val content = doc.selectFirst(".entry-content")
+            ?: doc.selectFirst("article")
+            ?: doc.selectFirst("main")
+            ?: doc.body()
+
+        val result = mutableListOf<Attachment>()
+        val seenKeys = mutableSetOf<String>()
+
+        // 1) Links directos a imágenes y PDFs (suelen apuntar al archivo en tamaño completo).
+        for (a in content.select("a[href]")) {
+            val href = a.absUrl("href")
+            if (href.isBlank()) continue
+            when {
+                isPdfUrl(href) -> {
+                    if (seenKeys.add(href.lowercase())) result += Attachment(href, AttachmentType.PDF)
+                }
+                isImageUrl(href) && isCgeUpload(href) -> {
+                    if (seenKeys.add(imageKey(href))) result += Attachment(href, AttachmentType.IMAGE)
+                }
+            }
+        }
+
+        // 2) Imágenes embebidas en el cuerpo (por si no tienen link envolvente).
+        for (img in content.select("img[src]")) {
+            val src = img.absUrl("src")
+            if (src.isBlank()) continue
+            if (isImageUrl(src) && isCgeUpload(src) && seenKeys.add(imageKey(src))) {
+                result += Attachment(src, AttachmentType.IMAGE)
+            }
+        }
+
+        Timber.d("CGE adjuntos en %s: %d", baseUrl, result.size)
+        return result
+    }
+
+    private fun isPdfUrl(url: String): Boolean =
+        url.substringBefore("?").endsWith(".pdf", ignoreCase = true) &&
+            url.contains("entrerios.gov.ar", ignoreCase = true)
+
+    private fun isImageUrl(url: String): Boolean {
+        val path = url.substringBefore("?").lowercase()
+        return path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png")
+    }
+
+    private fun isCgeUpload(url: String): Boolean =
+        url.contains("/wp-content/uploads/", ignoreCase = true)
+
+    /** Agrupa las variantes redimensionadas de WordPress (-1086x1536) bajo una sola clave. */
+    private fun imageKey(url: String): String =
+        url.substringBefore("?")
+            .replace(SIZE_SUFFIX_PATTERN, "$1")
+            .lowercase()
+
+    // ---------------------------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------------------------
 
@@ -275,5 +379,6 @@ class CgeScraper @Inject constructor(
     companion object {
         private const val MAX_EXCERPT_CHARS = 280
         private val POST_URL_PATTERN = Regex("/\\d{4}/\\d{2}/[^/]+/")
+        private val SIZE_SUFFIX_PATTERN = Regex("-\\d+x\\d+(\\.(?:jpg|jpeg|png))$", RegexOption.IGNORE_CASE)
     }
 }

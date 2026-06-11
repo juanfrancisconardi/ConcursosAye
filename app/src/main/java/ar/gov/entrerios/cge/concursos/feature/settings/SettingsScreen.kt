@@ -14,10 +14,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -39,13 +43,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material.icons.outlined.DateRange
 import ar.gov.entrerios.cge.concursos.BuildConfig
 import ar.gov.entrerios.cge.concursos.R
 import ar.gov.entrerios.cge.concursos.core.model.Category
 import ar.gov.entrerios.cge.concursos.core.model.DarkMode
+import ar.gov.entrerios.cge.concursos.core.model.Departamental
 import ar.gov.entrerios.cge.concursos.core.model.SyncMode
 import ar.gov.entrerios.cge.concursos.core.util.ConcursoDateFilter
+import ar.gov.entrerios.cge.concursos.core.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,7 +104,7 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.Schedule,
+                            imageVector = Icons.Outlined.DateRange,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -170,6 +176,16 @@ fun SettingsScreen(
             }
 
             Spacer(modifier = Modifier.height(4.dp))
+            SectionLabel(stringResource(R.string.settings_departamental_title))
+
+            SettingCard {
+                DepartamentalSelector(
+                    selected = settings.selectedDepartamental,
+                    onSelect = viewModel::setDepartamental
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
             SectionLabel(stringResource(R.string.settings_category_categories))
 
             SettingCard {
@@ -196,6 +212,13 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                TextButton(
+                    onClick = { onOpenUrl(Constants.BASE_URL + Constants.CONCURSOS_PATH) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.settings_official_source))
+                }
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.settings_version, BuildConfig.VERSION_NAME),
@@ -305,6 +328,62 @@ private fun SyncModeOption(
                 text = description,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DepartamentalSelector(
+    selected: Departamental,
+    onSelect: (Departamental) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        Text(
+            text = stringResource(R.string.settings_departamental_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = it }
+        ) {
+            OutlinedTextField(
+                value = selected.displayName,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(stringResource(R.string.settings_departamental_hint)) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                Departamental.selectable.forEach { dept ->
+                    DropdownMenuItem(
+                        text = { Text(dept.displayName) },
+                        onClick = {
+                            onSelect(dept)
+                            expanded = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
+        }
+        if (selected.isActive) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.settings_departamental_deep_scan_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }

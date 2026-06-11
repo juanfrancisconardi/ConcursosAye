@@ -16,7 +16,8 @@ data class Concurso(
     val isNew: Boolean,
     val isRead: Boolean,
     val matches: List<KeywordMatch> = emptyList(),
-    val score: Int = 0
+    val score: Int = 0,
+    val deepScannedAt: Long? = null
 )
 
 /**

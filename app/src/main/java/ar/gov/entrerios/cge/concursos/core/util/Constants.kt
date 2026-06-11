@@ -26,4 +26,19 @@ object Constants {
 
     /** No volver a lanzar una sync completa antes de este intervalo. */
     const val SYNC_MIN_INTERVAL_BETWEEN_RUNS_MS = 90_000L
+
+    /**
+     * Intervalo entre descargas de adjuntos estáticos (imágenes/PDF en /wp-content/uploads).
+     * Son archivos estáticos, menos sensibles al firewall que las páginas dinámicas.
+     */
+    const val OCR_ASSET_REQUEST_INTERVAL_MS = 1_500L
+
+    /** Tope de adjuntos a procesar por aviso en la lectura profunda (OCR). */
+    const val OCR_MAX_ATTACHMENTS_PER_POST = 6
+
+    /** Tope de páginas a renderizar por PDF en la lectura profunda. */
+    const val OCR_MAX_PDF_PAGES = 8
+
+    /** Tope de avisos recientes a procesar en una corrida de "Buscar a fondo". */
+    const val DEEP_SCAN_MAX_POSTS = 8
 }

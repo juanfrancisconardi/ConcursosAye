@@ -15,7 +15,9 @@ data class AppSettings(
     val dailyMinute: Int = 0,
     val notificationsEnabled: Boolean = true,
     val darkMode: DarkMode = DarkMode.SYSTEM,
-    val monitoredCategories: Set<Category> = Category.monitored.toSet()
+    val monitoredCategories: Set<Category> = Category.monitored.toSet(),
+    /** DDE adicional a monitorear (lectura profunda incluida en cada sync). */
+    val selectedDepartamental: Departamental = Departamental.PARANA
 )
 
 /**

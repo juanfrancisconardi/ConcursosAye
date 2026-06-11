@@ -6,9 +6,11 @@ import ar.gov.entrerios.cge.concursos.core.model.Concurso
 import ar.gov.entrerios.cge.concursos.core.model.SyncMode
 import ar.gov.entrerios.cge.concursos.core.util.SyncEventBus
 import ar.gov.entrerios.cge.concursos.domain.usecase.ClearAllNewFlagsUseCase
+import ar.gov.entrerios.cge.concursos.domain.usecase.DeepScanRecentUseCase
 import ar.gov.entrerios.cge.concursos.domain.usecase.ObserveRelevantConcursosUseCase
 import ar.gov.entrerios.cge.concursos.domain.usecase.ObserveSettingsUseCase
 import ar.gov.entrerios.cge.concursos.domain.usecase.RunForegroundSyncUseCase
+import ar.gov.entrerios.cge.concursos.domain.repository.DeepScanReport
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,6 +27,7 @@ class HomeViewModel @Inject constructor(
     observeSettings: ObserveSettingsUseCase,
     private val clearAllNewFlags: ClearAllNewFlagsUseCase,
     private val runForegroundSync: RunForegroundSyncUseCase,
+    private val deepScanRecent: DeepScanRecentUseCase,
     syncEventBus: SyncEventBus
 ) : ViewModel() {
 
@@ -42,6 +45,12 @@ class HomeViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
+    private val _isDeepScanning = MutableStateFlow(false)
+    val isDeepScanning: StateFlow<Boolean> = _isDeepScanning.asStateFlow()
+
+    private val _deepScanFeedback = MutableStateFlow<DeepScanFeedback?>(null)
+    val deepScanFeedback: StateFlow<DeepScanFeedback?> = _deepScanFeedback.asStateFlow()
+
     val syncInProgress: StateFlow<Boolean> = syncEventBus.syncInProgress
 
     fun refresh() {
@@ -56,7 +65,31 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun deepScan() {
+        if (_isDeepScanning.value) return
+        _isDeepScanning.value = true
+        viewModelScope.launch {
+            try {
+                val report = deepScanRecent()
+                _deepScanFeedback.value = DeepScanFeedback.Report(report)
+            } catch (t: Throwable) {
+                _deepScanFeedback.value = DeepScanFeedback.Failed
+            } finally {
+                _isDeepScanning.value = false
+            }
+        }
+    }
+
+    fun consumeDeepScanFeedback() {
+        _deepScanFeedback.value = null
+    }
+
     fun clearNewFlags() {
         viewModelScope.launch { clearAllNewFlags() }
     }
+}
+
+sealed class DeepScanFeedback {
+    data class Report(val report: DeepScanReport) : DeepScanFeedback()
+    data object Failed : DeepScanFeedback()
 }

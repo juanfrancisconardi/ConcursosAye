@@ -12,12 +12,15 @@ import ar.gov.entrerios.cge.concursos.core.model.MatchLocation
  * El matching:
  *   - ignora mayúsculas/minúsculas (TextNormalizer.lowercase)
  *   - tolera acentos (TextNormalizer.NFD + remove diacritics)
- *   - permite coincidencias parciales (substring sobre texto normalizado)
+ *   - para keywords cortas (<= 4 chars, sin espacios) exige palabra completa
+ *   - para frases o keywords largas permite coincidencia parcial
  */
 object KeywordMatcher {
 
     private const val TITLE_SCORE = 10
     private const val CONTENT_SCORE = 4
+    private const val SHORT_KEYWORD_MAX_LENGTH = 4
+    private val boundaryCharClass = "[^\\p{L}\\p{Nd}]"
 
     /**
      * Calcula las coincidencias de [keywords] dentro de [title] y [content].
@@ -35,8 +38,8 @@ object KeywordMatcher {
             val normalizedKeyword = TextNormalizer.normalize(keyword.text)
             if (normalizedKeyword.isEmpty()) continue
 
-            val inTitle = normalizedTitle.contains(normalizedKeyword)
-            val inContent = normalizedContent.contains(normalizedKeyword)
+            val inTitle = containsKeyword(normalizedTitle, normalizedKeyword)
+            val inContent = containsKeyword(normalizedContent, normalizedKeyword)
 
             when {
                 inTitle -> matches.add(
@@ -56,6 +59,22 @@ object KeywordMatcher {
             }
         }
         return matches
+    }
+
+    private fun containsKeyword(normalizedText: String, normalizedKeyword: String): Boolean {
+        if (normalizedText.isEmpty() || normalizedKeyword.isEmpty()) return false
+
+        val isShortSingleWord =
+            normalizedKeyword.length <= SHORT_KEYWORD_MAX_LENGTH &&
+                !normalizedKeyword.contains(' ')
+
+        if (!isShortSingleWord) {
+            return normalizedText.contains(normalizedKeyword)
+        }
+
+        val escaped = Regex.escape(normalizedKeyword)
+        val pattern = "(^|$boundaryCharClass)$escaped($boundaryCharClass|$)".toRegex()
+        return pattern.containsMatchIn(normalizedText)
     }
 
     fun totalScore(matches: List<KeywordMatch>): Int = matches.sumOf { it.score }

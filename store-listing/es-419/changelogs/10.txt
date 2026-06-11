@@ -1,0 +1,4 @@
+Novedades de esta versión:
+• Paraná queda seleccionada por defecto como departamental (podés cambiarla en Configuración).
+• Búsqueda exhaustiva con explicación más clara para el usuario.
+• Mejoras en textos de la ficha de Play Store.

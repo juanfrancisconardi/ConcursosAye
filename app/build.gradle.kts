@@ -33,8 +33,8 @@ android {
         applicationId = "ar.gov.entrerios.cge.concursos"
         minSdk = 24
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.0.3"
+        versionCode = 12
+        versionName = "1.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -116,7 +116,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.material.icons.core)
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.androidx.navigation.compose)
@@ -145,9 +145,9 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.material)
     implementation(libs.timber)
     implementation(libs.play.services.ads)
+    implementation(libs.mlkit.text.recognition)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

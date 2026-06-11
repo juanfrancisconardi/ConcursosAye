@@ -20,5 +20,6 @@ data class ConcursoEntity(
     val detectedAt: Long,
     val isNew: Boolean,
     val isRead: Boolean,
-    val score: Int
+    val score: Int,
+    val deepScannedAt: Long? = null
 )

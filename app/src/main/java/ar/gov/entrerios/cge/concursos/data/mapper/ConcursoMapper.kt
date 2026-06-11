@@ -21,7 +21,8 @@ fun ConcursoWithMatches.toDomain(): Concurso = Concurso(
     isNew = concurso.isNew,
     isRead = concurso.isRead,
     matches = matches.map { it.toDomain() },
-    score = concurso.score
+    score = concurso.score,
+    deepScannedAt = concurso.deepScannedAt
 )
 
 fun MatchEntity.toDomain(): KeywordMatch = KeywordMatch(
@@ -50,5 +51,6 @@ fun ConcursoEntity.toDomain(matches: List<KeywordMatch> = emptyList()): Concurso
     isNew = isNew,
     isRead = isRead,
     matches = matches,
-    score = score
+    score = score,
+    deepScannedAt = deepScannedAt
 )

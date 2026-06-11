@@ -1,0 +1,8 @@
+Novedades de esta versión:
+• Paraná queda seleccionada por defecto como departamental (podés cambiarla en Configuración).
+• Búsqueda exhaustiva: lee adjuntos (imágenes y PDF) con OCR para detectar cargos.
+• Diálogo explicativo más claro al usar la búsqueda exhaustiva.
+• Incluye convocatorias de la departamental que elijas, además del índice general del CGE.
+• Mejor filtrado de palabras clave, sin resultados fantasma en Relevantes.
+• Mejoras en textos e imagen de la ficha de Play Store.
+• App más liviana y rápida de instalar.

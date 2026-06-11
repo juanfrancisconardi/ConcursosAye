@@ -1,10 +1,10 @@
 package ar.gov.entrerios.cge.concursos.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Article
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Tag
 import androidx.compose.ui.graphics.vector.ImageVector
 
 object Routes {
@@ -26,7 +26,7 @@ enum class TopLevelDestination(
     val icon: ImageVector
 ) {
     Home(Routes.HOME, "Relevantes", Icons.Outlined.Home),
-    Results(Routes.RESULTS, "Todos", Icons.Outlined.Article),
-    Keywords(Routes.KEYWORDS, "Keywords", Icons.Outlined.Tag),
+    Results(Routes.RESULTS, "Todos", Icons.Outlined.List),
+    Keywords(Routes.KEYWORDS, "Keywords", Icons.Outlined.Edit),
     Settings(Routes.SETTINGS, "Ajustes", Icons.Outlined.Settings)
 }

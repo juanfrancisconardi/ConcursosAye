@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import ar.gov.entrerios.cge.concursos.core.model.SyncMode
+import ar.gov.entrerios.cge.concursos.domain.repository.ConcursoRepository
 import ar.gov.entrerios.cge.concursos.domain.repository.KeywordRepository
 import ar.gov.entrerios.cge.concursos.domain.repository.SettingsRepository
 import ar.gov.entrerios.cge.concursos.notifications.NotificationHelper
@@ -24,6 +25,7 @@ class ConcursosApp : Application(), Configuration.Provider {
     @Inject lateinit var syncScheduler: SyncScheduler
     @Inject lateinit var settingsRepository: SettingsRepository
     @Inject lateinit var keywordRepository: KeywordRepository
+    @Inject lateinit var concursoRepository: ConcursoRepository
     @Inject lateinit var notificationHelper: NotificationHelper
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -39,6 +41,9 @@ class ConcursosApp : Application(), Configuration.Provider {
 
         appScope.launch {
             keywordRepository.seedDefaultsIfEmpty()
+            // Limpia scores/coincidencias viejos para que "Relevantes" refleje
+            // siempre las keywords activas actuales (evita resultados fantasma).
+            concursoRepository.recomputeAllRelevance()
             applySyncMode()
         }
     }

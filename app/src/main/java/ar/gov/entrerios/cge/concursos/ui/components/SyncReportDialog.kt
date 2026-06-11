@@ -8,7 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -36,7 +36,7 @@ fun SyncReportDialog(
 
     val icon = when {
         hasNew -> Icons.Outlined.CheckCircle
-        hasErrors -> Icons.Outlined.ErrorOutline
+        hasErrors -> Icons.Outlined.Warning
         else -> Icons.Outlined.Info
     }
     val title = when {

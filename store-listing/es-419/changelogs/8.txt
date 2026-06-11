@@ -1,0 +1,5 @@
+Mejoras de esta versión:
+• Las palabras clave ahora filtran de forma más precisa: solo verás concursos que realmente coinciden con tus términos.
+• Corregimos un error que mostraba avisos no relacionados en "Relevantes".
+• Mejor coincidencia para palabras cortas (eoe, saie, ovo), evitando resultados de más.
+• Ajustes de estabilidad y rendimiento.
